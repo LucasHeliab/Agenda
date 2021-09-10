@@ -1,29 +1,13 @@
-import 'package:agenda/app/database/script.dart';
+import 'package:agenda/app/database/sqlite/connection.dart';
 import 'package:agenda/app/my_app.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ContactList extends StatelessWidget{
-  final lista = [
-    {'nome':'Lucas','telefone':'(93) 9 99105-9773','avatar':'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'},
-    {'nome':'Pai','telefone':'(93) 9 99195-3428','avatar':'https://cdn.pixabay.com/photo/2014/04/03/10/32/businessman-310819_960_720.png'},
-    {'nome':'Mãe','telefone':'(93) 9 99151-0180','avatar':'https://cdn.pixabay.com/photo/2021/08/14/07/21/child-6544739_960_720.png'},
-  ];
 
   Future<List<Map<String,dynamic>>> _buscar() async{
-    String path = join(await getDatabasesPath(), 'banco');
-    Database db = await openDatabase(
-      path,
-      version: 1,
-      onCreate: (db,v){
-        db.execute(createTable);
-        db.execute(insert1);
-        db.execute(insert2);
-        db.execute(insert3);
-      }
-    );
-    return db.query('contact');
+    Database? db = await Connection.get();
+    return db!.query('contact');
   }
 
   @override
