@@ -22,7 +22,7 @@ class ContactService{
   }
 
   //validações
-  validateName(String name){
+  validateName(String? name){
     var min = 3;
     var max = 50;
 
@@ -34,14 +34,14 @@ class ContactService{
       throw new DomainLayerException('O nome deve possuir menos de $max caracteres');
     }
   }
-  validateEmail(String email){
+  validateEmail(String? email){
     if(email == null){
       throw new DomainLayerException('O e-mail é obrigatorio');
     }else if(!email.contains('@')){
       throw new DomainLayerException('O e-mail deve possuir @');
     }
   }
-  validateTelefone(String phone){
+  validateTelefone(String? phone){
     var format = RegExp(r'^\([1-9]{2}\)[9][6-9]{1}[0-9]{3}-[0-9]{4}$');
 
     if(phone == null){

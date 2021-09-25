@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
       ),
+      debugShowCheckedModeBanner: false,
       routes: {
         HOME : (context) => ContactList(),
         CONTACT_FORM : (context) => ContactForm(),
