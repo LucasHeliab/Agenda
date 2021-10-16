@@ -15,7 +15,7 @@ abstract class _ContactListBack with Store{
 
   //Lista de contatos
   @observable
-  late Future<List<Contact>> list;
+  Future<List<Contact>>? list;
 
   //Método para atualizar a lista de contatos
   @action

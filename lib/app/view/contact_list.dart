@@ -1,59 +1,109 @@
-import 'package:agenda/app/database/sqlite/dao/contact_dao_impl.dart';
 import 'package:agenda/app/domain/entities/contact.dart';
 import 'package:agenda/app/my_app.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
-class ContactList extends StatelessWidget{
+import 'contact_list_back.dart';
 
-  Future<List<Contact>> _buscar() async{
-    return ContactDAOimpl().find();
+class ContactList extends StatelessWidget {
+  final _back = ContactListBack();
+
+  CircleAvatar _circleAvatar(String url){
+    return (Uri.tryParse(url)!.isAbsolute) ? 
+      CircleAvatar(backgroundImage: NetworkImage(url))
+      :CircleAvatar(child: Icon(Icons.person));
   }
 
-  @override
-  Widget build(BuildContext context){
-    return FutureBuilder(
-      future: _buscar(),
-      builder: (context, futuro){
-        if(futuro.hasData){
-          List<Contact>? lista = futuro.data as List<Contact>?;
-          return Scaffold(
-            appBar: AppBar(
-              title: Text('Agenda de Contatos'),
-              actions: [
-                IconButton(
-                  onPressed: (){
-                    Navigator.of(context).pushNamed(MyApp.CONTACT_FORM);
-                  }, 
-                  icon: Icon(Icons.add),
-                )
-              ],
-            ),
-            body: ListView.builder(
-              itemCount: lista!.length,
-              itemBuilder: (context,i){
-                var contato = lista[i];
-                var avatar = CircleAvatar(backgroundImage: NetworkImage(contato.urlAvatar));
-                return ListTile(
-                  leading: avatar,
-                  title: Text(contato.nome),
-                  subtitle: Text(contato.telefone),
-                  trailing: Container(
-                    width: 100,
-                    child: Row(
-                      children: [
-                        IconButton(onPressed: (){}, icon: Icon(Icons.edit)),
-                        IconButton(onPressed: (){}, icon: Icon(Icons.delete_forever_outlined))
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          );
-        }else{
-          return Scaffold();
-        }
-      },
+  Widget _editButton(Function function){
+    return IconButton(
+      icon: Icon(Icons.edit), 
+      onPressed:(){
+        function();
+      }
     );
+  }
+
+  Widget _deleteButton(BuildContext context, Function function){
+    return IconButton(
+      icon: Icon(Icons.delete_forever_outlined),
+      color: Colors.red,
+      onPressed: (){
+        showDialog(
+          context: context, 
+          builder: (context) => AlertDialog(
+            title: Text('Excluir'),
+            content: Text('Confirma a exclusão?'),
+            actions: [
+              TextButton(
+                child: Text('Não'),
+                onPressed: (){
+                  Navigator.of(context).pop();
+                }
+              ),
+              TextButton(
+                child: Text('Sim'),
+                onPressed: () {
+                  function();
+                }
+              )
+            ],
+          )
+        );
+      }
+    );
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Agenda de Contatos'),
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(MyApp.CONTACT_FORM);
+              },
+              icon: Icon(Icons.add),
+            )
+          ],
+        ),
+        body: Observer(builder: (context) {
+          return FutureBuilder(
+              future: _back.list,
+              builder: (context, futuro) {
+                if (!futuro.hasData) {
+                  return CircularProgressIndicator();
+                } else {
+                  List<Contact>? lista = futuro.data as List<Contact>?;
+                  return ListView.builder(
+                    itemCount: lista!.length,
+                    itemBuilder: (context, i) {
+                      var contato = lista[i];
+                      return ListTile(
+                        leading: _circleAvatar(contato.urlAvatar),
+                        title: Text(contato.nome),
+                        subtitle: Text(contato.telefone),
+                        trailing: Container(
+                          width: 100,
+                          child: Row(
+                            children: [
+                              _editButton((){
+                                _back.goToForm(context, contato);
+                              }),
+                              _deleteButton(context, (){
+                                var id = contato.id;
+                                _back.remove(id!);
+                                Navigator.of(context).pop();
+                              })
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }
+              });
+        }));
   }
 }

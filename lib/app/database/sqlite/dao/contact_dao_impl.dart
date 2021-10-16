@@ -28,7 +28,7 @@ class ContactDAOimpl implements ContactDAO{
   @override
   remove(int id) async{
     _db = (await Connection.get())!;
-    var sql = 'DELETE contact WHERE id=?';
+    var sql = 'DELETE FROM contact WHERE id=?';
     _db.rawDelete(sql,[id]);
   }
 
