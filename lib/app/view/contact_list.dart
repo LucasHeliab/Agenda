@@ -1,5 +1,4 @@
 import 'package:agenda/app/domain/entities/contact.dart';
-import 'package:agenda/app/my_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
@@ -62,7 +61,8 @@ class ContactList extends StatelessWidget {
           actions: [
             IconButton(
               onPressed: () {
-                Navigator.of(context).pushNamed(MyApp.CONTACT_FORM);
+                _back.goToForm(context);
+                //Navigator.of(context).pushNamed(MyApp.CONTACT_FORM);
               },
               icon: Icon(Icons.add),
             )

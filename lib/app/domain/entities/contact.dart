@@ -6,7 +6,7 @@ class Contact{
   String urlAvatar;
 
   Contact({
-    required this.id, 
+    this.id, 
     required this.nome, 
     required this.telefone, 
     required this.email, 
