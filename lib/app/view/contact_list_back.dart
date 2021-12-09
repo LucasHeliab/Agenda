@@ -32,6 +32,11 @@ abstract class _ContactListBack with Store{
     Navigator.of(context).pushNamed(MyApp.CONTACT_FORM, arguments: contact).then(refreshList);
   }
 
+  //Método para chamar tela de detalhes
+  goToDetails(BuildContext context, Contact contato){
+    Navigator.of(context).pushNamed(MyApp.CONTACT_DETAILS, arguments: contato);
+  }
+
 
   //Excluir contato
   remove(int id){
