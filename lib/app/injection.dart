@@ -3,7 +3,7 @@ import 'package:agenda/app/domain/interfaces/contact_dao.dart';
 import 'package:agenda/app/domain/services/contact_service.dart';
 import 'package:get_it/get_it.dart';
 
-setupInjection(){
+setupInjection() async {
   GetIt getit = GetIt.I;
 
   getit.registerSingleton<ContactDAO>(ContactDAOimpl());

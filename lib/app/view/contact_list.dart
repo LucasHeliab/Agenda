@@ -7,65 +7,24 @@ import 'contact_list_back.dart';
 class ContactList extends StatelessWidget {
   final _back = ContactListBack();
 
-  CircleAvatar _circleAvatar(String url){
-    return (Uri.tryParse(url)!.isAbsolute) ? 
-      CircleAvatar(backgroundImage: NetworkImage(url))
-      :CircleAvatar(child: Icon(Icons.person));
+  CircleAvatar _circleAvatar(String url) {
+    return (Uri.tryParse(url)!.isAbsolute)
+        ? CircleAvatar(backgroundImage: NetworkImage(url))
+        : CircleAvatar(child: Icon(Icons.person));
   }
-
-  Widget _editButton(Function function){
-    return IconButton(
-      icon: Icon(Icons.edit), 
-      onPressed:(){
-        function();
-      }
-    );
-  }
-
-  Widget _deleteButton(BuildContext context, Function function){
-    return IconButton(
-      icon: Icon(Icons.delete_forever_outlined),
-      color: Colors.red,
-      onPressed: (){
-        showDialog(
-          context: context, 
-          builder: (context) => AlertDialog(
-            title: Text('Excluir'),
-            content: Text('Confirma a exclusão?'),
-            actions: [
-              TextButton(
-                child: Text('Não'),
-                onPressed: (){
-                  Navigator.of(context).pop();
-                }
-              ),
-              TextButton(
-                child: Text('Sim'),
-                onPressed: () {
-                  function();
-                }
-              )
-            ],
-          )
-        );
-      }
-    );
-  }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Agenda de Contatos'),
-          actions: [
-            IconButton(
-              onPressed: () {
-                _back.goToForm(context);
-              },
-              icon: Icon(Icons.add),
-            )
-          ],
+          title: Text('Contatos'),
+          centerTitle: true,
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            _back.goToForm(context);
+          },
         ),
         body: Observer(builder: (context) {
           return FutureBuilder(
@@ -83,24 +42,9 @@ class ContactList extends StatelessWidget {
                         leading: _circleAvatar(contato.urlAvatar),
                         title: Text(contato.nome),
                         subtitle: Text(contato.telefone),
-                        onTap: (){
-                          _back.goToDetails(context,contato);
+                        onTap: () {
+                          _back.goToDetails(context, contato);
                         },
-                        trailing: Container(
-                          width: 100,
-                          child: Row(
-                            children: [
-                              _editButton((){
-                                _back.goToForm(context, contato);
-                              }),
-                              _deleteButton(context, (){
-                                var id = contato.id;
-                                _back.remove(id!);
-                                Navigator.of(context).pop();
-                              })
-                            ],
-                          ),
-                        ),
                       );
                     },
                   );

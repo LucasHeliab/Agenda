@@ -9,8 +9,7 @@ part 'contact_list_back.g.dart';
 
 class ContactListBack = _ContactListBack with _$ContactListBack;
 
-abstract class _ContactListBack with Store{
-
+abstract class _ContactListBack with Store {
   var _service = GetIt.I.get<ContactService>();
 
   //Lista de contatos
@@ -19,28 +18,24 @@ abstract class _ContactListBack with Store{
 
   //Método para atualizar a lista de contatos
   @action
-  refreshList([dynamic value]){
+  refreshList([dynamic value]) {
     list = _service.find();
   }
 
-  _ContactListBack(){
+  _ContactListBack() {
     refreshList();
   }
 
   //Método para chamar o form salvar/atualizar
-  goToForm(BuildContext context, [Contact? contact]){
-    Navigator.of(context).pushNamed(MyApp.CONTACT_FORM, arguments: contact).then(refreshList);
+  goToForm(BuildContext context, [Contact? contact]) {
+    Navigator.of(context)
+        .pushNamed(MyApp.CONTACT_FORM, arguments: contact)
+        .then(refreshList);
   }
 
   //Método para chamar tela de detalhes
-  goToDetails(BuildContext context, Contact contato){
-    Navigator.of(context).pushNamed(MyApp.CONTACT_DETAILS, arguments: contato);
-  }
-
-
-  //Excluir contato
-  remove(int id){
-    _service.remove(id);
-    refreshList();
+  goToDetails(BuildContext context, Contact contato) {
+    Navigator.of(context).pushNamed(MyApp.CONTACT_DETAILS,
+        arguments: {'contato': contato, 'list': list}).then(refreshList);
   }
 }
